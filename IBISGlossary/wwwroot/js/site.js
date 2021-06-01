@@ -98,6 +98,9 @@ function Delete(url) {
             type: "DELETE",
             url: url,
             dataType: 'json',
+            error: function (e) {
+                toastr["error"]("There has been a problem deleting the record. ", "Error:");
+            },
             success: function (data) {
                 if (data.success) {
                     ShowMessage(data.message);
