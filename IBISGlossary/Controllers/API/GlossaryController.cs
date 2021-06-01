@@ -30,10 +30,14 @@ namespace IBISGlossary
         [HttpGet("GetBySearch")]
         public IActionResult GetBySearch(string Term)
         {
-            return Json(new { data = _unitOfWork.glossary.GetAllOrSearch(s=>s.Term.Contains(Term)) });
+            if (string.IsNullOrWhiteSpace(Term))
+                return Json(new { data = _unitOfWork.glossary.GetAllOrSearch() });
+            else
+                return Json(new { data = _unitOfWork.glossary.GetAllOrSearch(s=>s.Term.Contains(Term)) });
         }
 
-        [HttpDelete]
+        [HttpDelete("Delete")]
+        [Route("Delete/{id}")]
         public IActionResult Delete(int Id)
         {
             var objFromDb = _unitOfWork.glossary.Get(Id);
