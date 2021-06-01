@@ -1,0 +1,71 @@
+﻿@model IBISGlossary.Model.Glossary
+@{
+    var title = "Create Glossary";
+    ViewData["Title"] = "Upsert";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form method="post" asp-action="Upsert">
+    <div class="row px-2 mx-2 backgroundWhite border">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @if (Model.Id != 0)
+        {
+            <input type="hidden" asp-for="Id" />
+            title = "Edit Glossary";
+        }
+        <div class="col-12">
+            <h2 class="text-primary">@title</h2>
+            <br />
+        </div>
+
+        <div class="col-8">
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Term"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Term" class="form-control" />
+                    <span asp-validation-for="Term" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-4">
+                    <label asp-for="Definition"></label>
+                </div>
+                <div class="col-8">
+                    <input asp-for="Definition" class="form-control" />
+                    <span asp-validation-for="Definition" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-4">
+                    
+                </div>
+
+                <div class="col-8 row offset-4">
+                    @if (Model.Id != 0)
+                    {
+                        <div class="col-6">
+                            <button type="submit" class="btn btn-primary form-control" asp-route-id="@Model.Id">Update</button>
+                        </div>
+                        <div class="col-6">
+                            <a asp-action="index" class="btn btn-success form-control">Back to list</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-6">
+                            <button type="submit" class="btn btn-primary form-control">Create</button>
+                        </div>
+                        <div class="col-6">
+                            <a asp-action="index" class="btn btn-success form-control">Back to list</a>
+                        </div>
+                    }
+                </div>
+
+            </div>
+        </div>
+</form>
+
