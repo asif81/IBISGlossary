@@ -25,41 +25,57 @@ namespace IBISGlossary.Controllers
         public IActionResult Upsert(int? Id)
         {
             Glossary glossary = new Glossary();
+            try
+            {                
+                if (Id == null)
+                {
+                    return View(glossary);
+                }
 
-            if (Id == null)
-            {
+                glossary = _unitOfWork.glossary.Get(Id.GetValueOrDefault());
+
+                if (glossary == null)
+                {
+                    TempData["errorMessage"] = "Glossary with this Id does not exists!";
+                    return View(glossary);
+                }
+
                 return View(glossary);
             }
-
-            glossary = _unitOfWork.glossary.Get(Id.GetValueOrDefault());
-
-            if (glossary == null)
+            catch
             {
-                return NotFound();
+                TempData["errorMessage"] = "Error loading glossary!";
+                return View(glossary);
             }
-
-            return View(glossary);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Upsert(Glossary glossary)
         {
-            if (ModelState.IsValid)
+            try
             {
-                if (glossary.Id == 0)
+                if (ModelState.IsValid)
                 {
-                    _unitOfWork.glossary.Add(glossary);
-                }
-                else
-                {
-                    _unitOfWork.glossary.Update(glossary);
-                }
+                    if (glossary.Id == 0)
+                    {
+                        _unitOfWork.glossary.Add(glossary);
+                    }
+                    else
+                    {
+                        _unitOfWork.glossary.Update(glossary);
+                    }
 
-                _unitOfWork.Save();
-                return RedirectToAction(nameof(Index));
+                    _unitOfWork.Save();
+                    return RedirectToAction(nameof(Index));
+                }
+                return View(glossary);
             }
-            return View(glossary);
+            catch
+            {
+                TempData["errorMessage"] = "Error updating glossary!";
+                return View(glossary);
+            }
         }
     }
 }

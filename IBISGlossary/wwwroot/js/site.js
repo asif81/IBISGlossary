@@ -10,6 +10,14 @@ function loadGlossary() {
             url: "/api/Glossary/GetAll",
             type: 'GET',
             dataType: 'json',
+            "dataSrc": function (data) {
+                if (data.success)
+                    return data.data;
+                else {
+                    toastr["error"](data.message);
+                    return data.data;
+                }
+            },
             error: function (e) {
                 toastr["error"]("There has been a problem retrieving the information. ", "Error:");
             },
@@ -51,6 +59,14 @@ function loadGlossaryByParams() {
             url: "/api/Glossary/GetBySearch?Term=" + Term,
             type: 'GET',
             dataType: 'json',
+            "dataSrc": function (data) {
+                if (data.success)
+                    return data.data;
+                else {
+                    toastr["error"](data.message);
+                    return data.data;
+                }
+            },
             error: function (e) {
                 toastr["error"]("There has been a problem retrieving the information. ", "Error:");
             },

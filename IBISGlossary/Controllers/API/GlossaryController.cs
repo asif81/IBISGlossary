@@ -24,33 +24,54 @@ namespace IBISGlossary
         [HttpGet("GetAll")]
         public IActionResult GetAll()
         {
-            return Json(new { data = _unitOfWork.glossary.GetAllOrSearch() });
+            try
+            {
+                return Json(new { success = true, data = _unitOfWork.glossary.GetAllOrSearch() });
+            }
+            catch
+            {
+                return Json(new { success = false, message = "Error loading glossary!", data = "" });
+            }
         }
 
         [HttpGet("GetBySearch")]
         public IActionResult GetBySearch(string Term)
         {
-            if (string.IsNullOrWhiteSpace(Term))
-                return Json(new { data = _unitOfWork.glossary.GetAllOrSearch() });
-            else
-                return Json(new { data = _unitOfWork.glossary.GetAllOrSearch(s=>s.Term.Contains(Term)) });
+            try
+            {
+                if (string.IsNullOrWhiteSpace(Term))
+                    return Json(new { success = true, data = _unitOfWork.glossary.GetAllOrSearch() });
+                else
+                    return Json(new { success = true, data = _unitOfWork.glossary.GetAllOrSearch(s=>s.Term.Contains(Term)) });
+            }
+            catch
+            {
+                return Json(new { success = false, message = "Error loading glossary!", data = "" });
+            }
         }
 
         [HttpDelete("Delete")]
         [Route("Delete/{id}")]
         public IActionResult Delete(int Id)
         {
-            var objFromDb = _unitOfWork.glossary.Get(Id);
-
-            if (objFromDb == null)
+            try
             {
-                return Json(new { success = false, error = "Error deleting glossary!" });
+                var objFromDb = _unitOfWork.glossary.Get(Id);
+
+                if (objFromDb == null)
+                {
+                    return Json(new { success = false, message = "Glossary does not exist!" });
+                }
+
+                _unitOfWork.glossary.Remove(objFromDb);
+                _unitOfWork.Save();
+
+                return Json(new { success = true, message = "Deleted successfully!" });
             }
-
-            _unitOfWork.glossary.Remove(objFromDb);
-            _unitOfWork.Save();
-
-            return Json(new { success = true, message = "Deleted successfully!" });
+            catch
+            {
+                return Json(new { success = false, message = "Error deleting glossary!" });
+            }
         }
     }
 }
