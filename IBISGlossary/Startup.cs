@@ -34,6 +34,26 @@ namespace IBISGlossary
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 
+        private static void UpdateDatabase(IApplicationBuilder app)
+        {
+            try
+            {
+                using (var serviceScope = app.ApplicationServices
+                    .GetRequiredService<IServiceScopeFactory>()
+                    .CreateScope())
+                {
+                    using (var context = serviceScope.ServiceProvider.GetService<ApplicationDbContext>())
+                    {
+                        context.Database.Migrate();
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+
+            }
+        }
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -60,6 +80,9 @@ namespace IBISGlossary
                     name: "default",
                     pattern: "{controller=Glossary}/{action=Index}/{id?}");
             });
+
+            // create or update db
+            UpdateDatabase(app);
         }
     }
 }
