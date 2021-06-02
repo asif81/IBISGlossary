@@ -28,12 +28,18 @@ namespace DataAccess.Repository
             return dbSet.Find(Id);
         }
 
-        public IEnumerable<T> GetAllOrSearch(Expression<Func<T, bool>> filter)
+        public IEnumerable<T> GetAllOrSearch(Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, Expression<Func<T, bool>> filter=null)
         {
             IQueryable<T> query = dbSet;
+
             if (filter != null)
             {
                 return query.Where(filter).ToList();
+            }
+
+            if (orderBy != null)
+            {
+                return orderBy(query).ToList();
             }
 
             return query.ToList();

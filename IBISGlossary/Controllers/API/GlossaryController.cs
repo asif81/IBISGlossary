@@ -40,9 +40,9 @@ namespace IBISGlossary
             try
             {
                 if (string.IsNullOrWhiteSpace(Term))
-                    return Json(new { success = true, data = _unitOfWork.glossary.GetAllOrSearch() });
+                    return Json(new { success = true, data = _unitOfWork.glossary.GetAllOrSearch(s => s.OrderBy(s => s.Term)) });
                 else
-                    return Json(new { success = true, data = _unitOfWork.glossary.GetAllOrSearch(s=>s.Term.Contains(Term)) });
+                    return Json(new { success = true, data = _unitOfWork.glossary.GetAllOrSearch(s=> s.OrderBy(s=>s.Term) ,s=>s.Term.Contains(Term)) });
             }
             catch
             {
